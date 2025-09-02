@@ -10,6 +10,9 @@ defmodule HastyWeb.ContactLive.Index do
       <.header>
         Listing Contacts
         <:actions>
+          <.button navigate={~p"/users/settings"}>
+            <.icon name="hero-arrow-left" />
+          </.button>
           <.button variant="primary" navigate={~p"/contacts/new"}>
             <.icon name="hero-plus" /> New Contact
           </.button>
