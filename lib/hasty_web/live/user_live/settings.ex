@@ -66,6 +66,7 @@ defmodule HastyWeb.UserLive.Settings do
 
       <div class="text-center">
         <.button variant="primary" navigate={~p"/contacts"}>Contacts</.button>
+        <.button variant="primary" navigate={~p"/addresses"}>Addresses</.button>
       </div>
 
       <div class="divider" />
