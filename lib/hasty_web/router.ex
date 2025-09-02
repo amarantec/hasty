@@ -60,6 +60,12 @@ defmodule HastyWeb.Router do
       live "/contacts/new", ContactLive.Form, :new
       live "/contacts/:id", ContactLive.Show, :show
       live "/contacts/:id/edit", ContactLive.Form, :edit
+
+      # Addresses
+      live "/addresses", AddressLive.Index, :index
+      live "/addresses/new", AddressLive.Form, :new
+      live "/addresses/:id", AddressLive.Show, :show
+      live "/addresses/:id/edit", AddressLive.Form, :edit
     end
 
     post "/users/update-password", UserSessionController, :update_password
