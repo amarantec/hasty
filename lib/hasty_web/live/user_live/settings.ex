@@ -64,6 +64,12 @@ defmodule HastyWeb.UserLive.Settings do
 
       <div class="divider" />
 
+      <div class="text-center">
+        <.button variant="primary" navigate={~p"/contacts"}>Contacts</.button>
+      </div>
+
+      <div class="divider" />
+
       <.form
         for={@password_form}
         id="password_form"
@@ -192,6 +198,7 @@ defmodule HastyWeb.UserLive.Settings do
     end
   end
 
+  ## User info
   def handle_event("validate_user_info", %{"user" => user_params}, socket) do
     user_info_form =
       Accounts.change_user_info(socket.assigns.current_scope.user, user_params)
