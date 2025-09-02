@@ -54,6 +54,12 @@ defmodule HastyWeb.Router do
       on_mount: [{HastyWeb.UserAuth, :require_authenticated}] do
       live "/users/settings", UserLive.Settings, :edit
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
+      
+      # Contact
+      live "/contacts", ContactLive.Index, :index
+      live "/contacts/new", ContactLive.Form, :new
+      live "/contacts/:id", ContactLive.Show, :show
+      live "/contacts/:id/edit", ContactLive.Form, :edit
     end
 
     post "/users/update-password", UserSessionController, :update_password
