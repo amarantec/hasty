@@ -33,7 +33,8 @@ config :hasty, HastyWeb.Endpoint,
     layout: false
   ],
   pubsub_server: Hasty.PubSub,
-  live_view: [signing_salt: "qMh9vLPH"]
+  live_view: [signing_salt: "qMh9vLPH"],
+  websocket: [timeout: 60_000]
 
 # Configures the mailer
 #
