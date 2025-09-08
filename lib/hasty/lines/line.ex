@@ -9,6 +9,8 @@ defmodule Hasty.Lines.Line do
     field :flat_fare, :boolean
     field :base_price, :decimal
 
+    has_many :buses, Hasty.Buses.Bus
+
     timestamps(type: :utc_datetime)
   end
   @doc false
