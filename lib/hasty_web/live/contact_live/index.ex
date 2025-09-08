@@ -21,7 +21,7 @@ defmodule HastyWeb.ContactLive.Index do
 
       <.table
         id="contacts"
-        rows={@streams.contacts}
+        rows={@stream.contacts}
         row_click={fn {_id, contact} -> JS.navigate(~p"/contacts/#{contact}") end}
       >
         <:col :let={{_id, contact}} label="DDI">{contact.ddi}</:col>
