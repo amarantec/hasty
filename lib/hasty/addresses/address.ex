@@ -12,7 +12,7 @@ defmodule Hasty.Addresses.Address do
     field :state, :string
     field :country, :string
     field :zip_code, :string
-    field :user_id, :binary_id
+    belongs_to :user, Hasty.Accounts.User
 
     timestamps(type: :utc_datetime)
   end
