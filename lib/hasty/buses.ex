@@ -18,6 +18,14 @@ defmodule Hasty.Buses do
   """
   def get_bus(id), do: Repo.get_by(Bus, id: id)
 
+  @doc"""
+  Return bus with line info.
+  """
+  def get_bus_with_line(id) do
+    Repo.get(Bus, id)
+    |> Repo.preload(:line)
+  end
+
   @doc """
   Creates a bus.
 
