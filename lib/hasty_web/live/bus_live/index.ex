@@ -29,11 +29,25 @@ defmodule HastyWeb.BusLive.Index do
         rows={@streams.buses}
         row_click={fn {_id, bus} -> JS.navigate(~p"/buses/#{bus}") end}
       >
-        <:col :let={{_id, bus}} label="Test">{bus.plate}</:col>
+        <:col :let={{_id, bus}} label="Bus Plate">{bus.plate}</:col>
+        <:col :let={{_id, bus}} label="Bus Capacity">{bus.capacity}</:col>
         <:action :let={{_id, bus}}>
           <div class="sr-only">
             <.link navigate={~p"/buses/#{bus}"}>Show</.link>
           </div>
+          <%= if @current_scope && @current_scope.user.role == "admin" do %>
+            <.link navigate={~p"/admin/buses/#{bus}/edit"}>Edit</.link>
+          <% end %>
+        </:action>
+        <:action :let={{id, bus}}>
+          <%= if @current_scope && @current_scope.user.role == "admin" do %>
+            <.link
+              phx-click={JS.push("delete", value: %{id: bus.id}) |> hide("##{id}")}
+              data-confirm="Are you sure?"
+            >
+              Delete
+            </.link>
+          <% end %>
         </:action>
       </.table>
     </Layouts.app>
