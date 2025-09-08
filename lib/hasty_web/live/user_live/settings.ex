@@ -35,6 +35,42 @@ defmodule HastyWeb.UserLive.Settings do
           <:subtitle>Manage your account name and bio</:subtitle>
         </.header>
       </div>
+      <.form for={%{}} id="avatar_form" phx-submit="save_avatar">
+        <div class="flex flex-col items-center space-y-4">
+          <%= if @current_scope.user.profile_image do %>
+            <img src={@current_scope.user.profile_image}
+              class="rounded-full w-32 h-32 object-cover border" />
+          <% else %>
+            <div class="rounded-full w-32 h-32 bg-gray-200 flex items-center justify-center">
+              <span class="text-gray-500">No Image</span>
+            </div>
+          <% end %>
+
+          <.live_file_input upload={@uploads.avatar} />
+
+          <%= for entry <- @uploads.avatar.entries do %>
+            <article class="upload-entry">
+              <span><%= entry.client_name %> (<%= entry.progress %>%)</span>
+              <progress value={entry.progress} max="100"></progress>
+
+              <%= for err <- upload_errors(@uploads.avatar, entry) do %>
+                <p class="alert alert-danger"><%= error_to_string(err) %></p>
+              <% end %>
+            </article>
+          <% end %>
+
+          <%= for err <- upload_errors(@uploads.avatar) do %>
+            <p class="alert alert-danger"><%= error_to_string(err) %></p>
+          <% end %>
+          <.button
+            type="submit"
+            variant="primary"
+            phx-disable-with="Saving..."
+          >
+            Save Profile Image
+          </.button>
+        </div>
+      </.form>
 
       <.form
         for={@user_info_form}
@@ -125,11 +161,15 @@ defmodule HastyWeb.UserLive.Settings do
   def mount(_params, _session, socket) do
     user = socket.assigns.current_scope.user
     email_changeset = Accounts.change_user_email(user, %{}, validate_unique: false)
-    #password_changeset = Accounts.change_user_password(user, %{}, hash_password: false)
     user_changeset = Accounts.change_user_info(user, %{})
 
     socket =
       socket
+      |> assign(:uploaded_files, [])
+      |> allow_upload(:avatar,
+        accept: :any,
+        max_entries: 1,
+        max_file_size: 5_000_000)
       |> assign(:current_email, user.email)
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(Accounts.change_user_password(user, %{}, hash_password: :false)))
@@ -222,4 +262,39 @@ defmodule HastyWeb.UserLive.Settings do
       {:noreply, assign(socket, user_info_form: to_form(changeset, action: :insert))}
     end
   end
+
+  def handle_event("save_avatar", _params, socket) do
+    user = socket.assigns.current_scope.user
+
+    IO.inspect(socket.assigns.uploads.avatar.entries, label: "Entradas de uploads")
+
+    uploaded_file =
+      consume_uploaded_entries(socket, :avatar, fn %{path: path}, entry ->
+        filename = "#{user.id}#{Path.extname(entry.client_name)}"
+        uploads_dir = Path.join(Application.app_dir(:hasty, "priv/static"), "uploads/profiles")
+        dest = Path.join(uploads_dir, filename)
+
+        File.mkdir_p!(uploads_dir)
+        File.cp!(path, dest)
+
+        {:ok, "/uploads/profiles/#{filename}"}
+        end)
+        |> List.first()
+      IO.inspect(uploaded_file)
+
+    if uploaded_file do
+      {:ok, updated_user} = Accounts.update_profile_image(user, uploaded_file)
+      {:noreply,
+        socket
+        |> put_flash(:info, "Profile image updated.")
+        |> assign(:current_scope, %{socket.assigns.current_scope | user: updated_user})}
+    else
+      {:noreply, put_flash(socket, :error, "Upload failed.")}
+    end
+  end
+
+  defp error_to_string(:too_large), do: "File is too large"
+  defp error_to_string(:too_many_files), do: "To many files"
+  defp error_to_string(:not_accepted), do: "Invalid file typr"
+  defp error_to_string(_), do: "Upload error"
 end
