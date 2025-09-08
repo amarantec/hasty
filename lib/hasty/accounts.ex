@@ -304,4 +304,10 @@ defmodule Hasty.Accounts do
     |> User.user_info_changeset(attrs)
     |> Repo.update()
   end
+
+  def update_profile_image(user, attrs \\ %{}) do
+    user
+    |> Ecto.Changeset.change()
+    |> Ecto.Changeset.cast(attrs, [:profile_image])
+  end
 end
