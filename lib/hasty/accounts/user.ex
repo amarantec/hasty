@@ -10,9 +10,11 @@ defmodule Hasty.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :utc_datetime
     field :authenticated_at, :utc_datetime, virtual: true
+    field :profile_image, :string
     field :first_name, :string
     field :last_name, :string
     field :bio, :string
+    field :role, :string, default: "user"
 
     timestamps(type: :utc_datetime)
   end
@@ -63,7 +65,7 @@ defmodule Hasty.Accounts.User do
 
   def user_info_changeset(user, attrs) do
     user
-    |> cast(attrs, [:first_name, :last_name, :bio])
+    |> cast(attrs, [:profile_image, :first_name, :last_name, :bio])
   end
 
   @doc """
