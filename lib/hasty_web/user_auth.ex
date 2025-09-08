@@ -256,6 +256,7 @@ defmodule HastyWeb.UserAuth do
     end)
   end
 
+
   @doc "Returns the path to redirect to after log in."
   # the user was already logged in, redirect to settings
   def signed_in_path(%Plug.Conn{assigns: %{current_scope: %Scope{user: %Accounts.User{}}}}) do
@@ -275,6 +276,19 @@ defmodule HastyWeb.UserAuth do
       |> put_flash(:error, "You must log in to access this page.")
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/log-in")
+      |> halt()
+    end
+  end
+
+  def ensure_admin(conn, _opts) do
+    user = conn.assigns.current_scope.user
+
+    if user.role ==  "admin" do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You are not authorized to access this page.")
+      |> redirect(to: ~p"/")
       |> halt()
     end
   end
