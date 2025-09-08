@@ -13,12 +13,17 @@ defmodule HastyWeb.Router do
     plug :fetch_current_scope_for_user
   end
 
+  pipeline :require_admin do
+    plug :require_authenticated_user
+    plug :ensure_admin
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
 
   scope "/", HastyWeb do
-    pipe_through :browser
+    pipe_through [:browser]
 
     get "/", PageController, :home
   end
@@ -79,9 +84,30 @@ defmodule HastyWeb.Router do
       live "/users/register", UserLive.Registration, :new
       live "/users/log-in", UserLive.Login, :new
       live "/users/log-in/:token", UserLive.Confirmation, :new
+
+      # Bus
+      live "/buses", BusLive.Index, :index
+      #live "/admin/buses/new", BusLive.Form, :new
+      live "/buses/:id", BusLive.Show, :show
+      live "/admin/buses/:id/edit", BusLive.Form, :edit
+
+      # Line
+      live "/lines", LineLive.Index, :index
+      live "/lines/:id", LineLive.Show, :show
     end
 
     post "/users/log-in", UserSessionController, :create
     delete "/users/log-out", UserSessionController, :delete
+  end
+
+  scope "/admin", HastyWeb do
+    pipe_through [:browser, :require_admin]
+    live_session :require_admin,
+      on_mount: [
+        {HastyWeb.UserAuth, :require_authenticated}
+      ] do
+        live "/buses/new", BusLive.Form, :new
+        live "/lines/new", LineLive.Form, :new
+      end
   end
 end
