@@ -7,7 +7,7 @@ defmodule Hasty.Buses.Bus do
   schema "buses" do
     field :plate, :string
     field :capacity, :integer
-    belongs_to :line_id, Hasty.Lines.Line
+    belongs_to :line, Hasty.Lines.Line
 
     timestamps(type: :utc_datetime)
   end
@@ -19,5 +19,6 @@ defmodule Hasty.Buses.Bus do
     |> cast(attrs, [:plate, :capacity])
     |> validate_required([:plate, :capacity])
     |> validate_format(:plate, @bus_plate_regex)
+    |> put_change(:line_id, Map.get(attrs, :line_id) || Map.get(attrs, "line_id"))
   end
 end
