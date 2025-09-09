@@ -2,7 +2,6 @@ defmodule HastyWeb.BusLive.Show do
   use HastyWeb, :live_view 
 
   alias Hasty.Buses
-  alias Hasty.Lines
 
   @impl true
   def render(assigns) do
@@ -27,7 +26,12 @@ defmodule HastyWeb.BusLive.Show do
         <:item title="Bus line">{@bus.line.name}</:item>
         <:item title="Bus Plate">{@bus.plate}</:item>
         <:item title="Bus Capacity">{@bus.capacity}</:item>
+        <:item title="Fare">${@bus.line.base_price}</:item>
       </.list>
+
+      <div class="divider" />
+      
+      <.button variant="primary">Buy Ticket</.button>
     </Layouts.app>
     """
   end
