@@ -6,8 +6,8 @@ defmodule Hasty.Lines.LineStop do
   @foreign_key_type :binary_id
   schema "line_stops" do
     field :order, :integer
-    belongs_to :line_id, Hasty.Lines.Line
-    belongs_to :bus_stop_id, Hasty.Buses.BusStops
+    belongs_to :line, Hasty.Lines.Line
+    belongs_to :bus_stop, Hasty.Buses.BusStop
 
     timestamps()
   end
