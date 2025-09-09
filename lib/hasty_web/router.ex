@@ -87,13 +87,16 @@ defmodule HastyWeb.Router do
 
       # Bus
       live "/buses", BusLive.Index, :index
-      #live "/admin/buses/new", BusLive.Form, :new
       live "/buses/:id", BusLive.Show, :show
-      live "/admin/buses/:id/edit", BusLive.Form, :edit
+      live "/bus-stops", BusLive.BusStopIndex, :index
+      live "/bus-stops/:id", BusLive.BusStopShow, :show
+
 
       # Line
       live "/lines", LineLive.Index, :index
       live "/lines/:id", LineLive.Show, :show
+      live "/line-stops", LineLive.LineStopIndex, :index
+      live "/line-stops/:id", LineLive.LineStopShow, :show
     end
 
     post "/users/log-in", UserSessionController, :create
@@ -107,7 +110,13 @@ defmodule HastyWeb.Router do
         {HastyWeb.UserAuth, :require_authenticated}
       ] do
         live "/buses/new", BusLive.Form, :new
+        live "/buses/:id/edit", BusLive.Form, :edit
         live "/lines/new", LineLive.Form, :new
+        live "/lines/:id/edit", LineLive.Form, :edit
+        live "/bus-stops/new", BusLive.BusStopForm, :new
+        live "/bus-stops/:id/edit", BusLive.BusStopForm, :edit
+        live "/line-stops/new", LineLive.LineStopForm, :new
+        live "/line-stops/:id/edit", LineLive.LineStopForm, :edit
       end
   end
 end
