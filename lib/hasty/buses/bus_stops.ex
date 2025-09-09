@@ -1,4 +1,4 @@
-defmodule Hasty.Buses.BusStops do
+defmodule Hasty.Buses.BusStop do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -8,7 +8,10 @@ defmodule Hasty.Buses.BusStops do
     field :name, :string
     field :latitude, :float
     field :longitude, :float
-  timestamps(type: :utc_datetime)
+
+    has_many :line_stops, Hasty.Lines.LineStop
+
+    timestamps(type: :utc_datetime)
   end
   
   def changeset(bus_stop, attrs) do
