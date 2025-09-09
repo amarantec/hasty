@@ -26,6 +26,8 @@ defmodule HastyWeb.LineLive.Index do
         row_click={fn {_, line} -> JS.navigate(~p"/lines/#{line}") end}
       >
         <:col :let={{_id, line}} label="Name">{line.name}</:col>
+        <:col :let={{_id, line}} label="Flat Fare">{line.flat_fare}</:col>
+        <:col :let={{_id, line}} label="Base Price">{line.base_price}</:col>
         <:action :let={{_id, line}}>
           <div class="sr-only">
             <.link navigate={~p"/lines/#{line}"}>Show</.link>
